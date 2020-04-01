@@ -15,7 +15,7 @@ Siirtola, Pekka, and Juha Röning. "Recognizing human activities user-independen
 smartphones based on accelerometer data." IJIMAI 1.5 (2012): 38-45.
 ```
 
-which can be found (here)[https://dialnet.unirioja.es/descarga/articulo/3954593.pdf].
+which can be found [here](https://dialnet.unirioja.es/descarga/articulo/3954593.pdf).
 
 ## Running the code
 To run the code simply open Matlab and run `process_data.m`. By changing the value of
