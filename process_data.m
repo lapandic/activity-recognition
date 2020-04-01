@@ -39,17 +39,24 @@ Training_standing = zeros(training_windows(1),window_length,3);
 Training_walking = zeros(training_windows(2),window_length,3);
 Training_running = zeros(training_windows(3),window_length,3);
 
+Training_standing_t = zeros(training_windows(1),window_length,1);
+Training_walking_t = zeros(training_windows(2),window_length,1);
+Training_running_t = zeros(training_windows(3),window_length,1);
+
 for i=1:training_windows(1)
 	Training_standing(i,:,:) = acc_standing((i-1)*300+1:i*300,:);
+    Training_standing_t(i,:,:) = t_standing((i-1)*300+1:i*300,:);
 end
 
 
 for i=1:training_windows(2)
 	Training_walking(i,:,:) = acc_walking((i-1)*300+1:i*300,:);
+	Training_walking_t(i,:,:) = t_walking((i-1)*300+1:i*300,:);
 end
 
 for i=1:training_windows(3)
 	Training_running(i,:,:) = acc_running((i-1)*300+1:i*300,:);
+	Training_running_t(i,:,:) = t_running((i-1)*300+1:i*300,:);
 end
 
 % test data
@@ -57,19 +64,28 @@ Test_standing = zeros(test_windows(1),window_length,3);
 Test_walking = zeros(test_windows(2),window_length,3);
 Test_running = zeros(test_windows(3),window_length,3);
 
+Test_standing_t = zeros(test_windows(1),window_length,1);
+Test_walking_t = zeros(test_windows(2),window_length,1);
+Test_running_t = zeros(test_windows(3),window_length,1);
+
 for i=training_windows(1)+1:num_windows(1)
 	Test_standing(i-training_windows(1),:,:) = acc_standing((i-1)*300+1:i*300,:);
+	Test_standing_t(i-training_windows(1),:,:) = t_standing((i-1)*300+1:i*300,:);    
 end
 
 for i=training_windows(2)+1:num_windows(2)
 	Test_walking(i-training_windows(2),:,:) = acc_walking((i-1)*300+1:i*300,:);
+	Test_walking_t(i-training_windows(2),:,:) = t_walking((i-1)*300+1:i*300,:);
 end
 
 for i=training_windows(3)+1:num_windows(3)
 	Test_running(i-training_windows(3),:,:) = acc_running((i-1)*300+1:i*300,:);
+    Test_running_t(i-training_windows(3),:,:) = t_running((i-1)*300+1:i*300,:);
 end
 
 Test_data = [Test_standing;Test_walking;Test_running];
+Test_data_t = [Test_standing_t; Test_walking_t; Test_running_t];
+
 %% plot to analyze
 plot_data = 0;
 if plot_data == 1
@@ -125,20 +141,33 @@ for i=1:size_td(1)
     disp("-----------");
     fprintf("Test sample: %d\n",i);
     if class == 1
-        disp("Result: Standing");
+        pred_result = "Standing";
     elseif class == 2
-        disp("Result: Walking");
+        pred_result = "Walking";
     elseif class == 3
-        disp("Result: Running");
+        pred_result = "Running";
     end
     
     expected_class = test_data_classes(i);
     if expected_class == 1
-        disp("Expected result: Standing");
+        exp_result = "Standing";
     elseif expected_class == 2
-        disp("Expected result: Walking");
+        exp_result = "Walking";
     elseif expected_class == 3
-        disp("Expected result: Running");
+        exp_result = "Running";
+    end
+    
+    disp(["Predicted result: " + pred_result]);
+    disp(["Expected result: " + exp_result]);
+    
+    if plot_data
+        figure(3+i)
+        data_t = Test_data_t(i, :, :)';
+        test_data = reshape(Test_data(i, :, :), size(Test_data, 2), size(Test_data, 3));
+        plot(data_t, test_data)
+        legend('x','y','z');
+        grid on;
+        title("Predicted: " + pred_result + ", Expected: " + exp_result);
     end
 end
     
